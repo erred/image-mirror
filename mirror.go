@@ -34,7 +34,7 @@ func (m Mirror) Ensure(img string) (dstImg string, err error) {
 // reg is the registry to mirror to,
 // dst = dst.reg/src.reg/name:tag
 func (m Mirror) mirror(srcRef name.Reference) (dst string, err error) {
-	srcImg, err := remote.Image(srcRef) // TODO: auth
+	srcImg, err := remote.Image(srcRef, remote.WithAuthFromKeychain(authn.DefaultKeychain))
 	if err != nil {
 		return "", fmt.Errorf("mirror remote src=%s: %w", srcRef.String(), err)
 	}

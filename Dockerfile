@@ -6,13 +6,13 @@ WORKDIR /workspace
 
 # cache layers
 COPY go.mod go.sum ./
-RUN --mount=type=cache,id=gomod,dst=/go/pkg/mod \
+RUN --mount=type=cache,id=gomod,target=/go/pkg/mod \
     go mod download
 
 # build
 COPY . .
-RUN --mount=type=cache,id=gomod,dst=/go/pkg/mod \
-    --mount=type=cache,id=gobuild,dst=/root/.cache/go-build \
+RUN --mount=type=cache,id=gomod,target=/go/pkg/mod \
+    --mount=type=cache,id=gobuild,target=/root/.cache/go-build \
     go build -trimpath -ldflags="-s -w" -o app .
 
 

@@ -1,0 +1,17 @@
+apiVersion: skaffold/v2beta11
+kind: Config
+metadata:
+  name: image-mirror
+build:
+  artifacts:
+    - image: index.docker.io/seankhliao/image-mirror
+      docker:
+        dockerfile: Dockerfile
+  local:
+    useBuildkit: true
+    # push: true
+deploy:
+  kustomize:
+    paths:
+      - .
+  kubeContext: kind-image-mirror

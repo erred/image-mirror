@@ -1,0 +1,16 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/name: image-mirror
+    app.kubernetes.io/instance: default
+    app.kubernetes.io/managed-by: kustomize
+  name: image-mirror
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: image-mirror
+subjects:
+  - kind: ServiceAccount
+    name: image-mirror
+    namespace: image-mirror

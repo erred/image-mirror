@@ -1,0 +1,13 @@
+.git/
+bin/
+k8s/
+
+.dockerignore
+.gitattributes
+.gitignore
+
+kustomization.yaml
+LICENSE
+Makefile
+README.md
+skaffold.yaml

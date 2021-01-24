@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: image-mirror
+  labels:
+    app.kubernetes.io/name: image-mirror
+    app.kubernetes.io/instance: default
+    app.kubernetes.io/version: 0.0.0
+    app.kubernetes.io/managed-by: kustomize
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: image-mirror
+      app.kubernetes.io/instance: default
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: image-mirror
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/version: 0.0.0
+        app.kubernetes.io/managed-by: kustomize
+    spec:
+      serviceAccountName: image-mirror
+      containers:
+        - name: image-mirror
+          image: index.docker.io/seankhliao/image-mirror:latest
+          # envFrom:
+          #   - secretRef:
+          #       name: image-mirror-creds
+          volumeMounts:
+            - mountPath: /root/.docker
+              name: dockerconfig
+      volumes:
+        - name: dockerconfig
+          secret:
+            secretName: image-mirror-creds
+            items:
+              - key: .dockerconfigjson
+                path: config.json

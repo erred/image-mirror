@@ -8,11 +8,13 @@ import (
 
 	"github.com/go-logr/logr"
 	"github.com/google/go-containerregistry/pkg/authn"
+	"k8s.io/klog/v2"
 	"k8s.io/klog/v2/klogr"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/client/config"
 	"sigs.k8s.io/controller-runtime/pkg/controller"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
+	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 	"sigs.k8s.io/controller-runtime/pkg/manager/signals"
 	"sigs.k8s.io/controller-runtime/pkg/source"
@@ -21,6 +23,7 @@ import (
 func main() {
 	ctx := signals.SetupSignalHandler()
 	opts := NewOptions(flag.CommandLine)
+	klog.InitFlags(nil)
 	flag.Parse()
 
 	opts.logger.Info("starting setup")
@@ -70,11 +73,15 @@ func setup(ctx context.Context, opts Options) (manager.Manager, error) {
 	}
 
 	mgr, err := manager.New(conf, manager.Options{
-		Logger: opts.logger.WithName("manager"),
+		Logger:                 opts.logger.WithName("manager"),
+		MetricsBindAddress:     ":8080",
+		HealthProbeBindAddress: ":8081",
 	})
 	if err != nil {
 		return nil, fmt.Errorf("setup manager: %w", err)
 	}
+	mgr.AddHealthzCheck("ping", healthz.Ping)
+	mgr.AddReadyzCheck("ping", healthz.Ping)
 
 	cl, err := client.New(conf, client.Options{})
 	if err != nil {

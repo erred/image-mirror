@@ -20,14 +20,33 @@ spec:
         app.kubernetes.io/instance: default
         app.kubernetes.io/version: 0.0.0
         app.kubernetes.io/managed-by: kustomize
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/metrics"
+        prometheus.io/port: "8080"
     spec:
       serviceAccountName: image-mirror
+      # securityContext:
+      #   runAsUser: 0 # TODO: move to own $HOME w/ docker creds
       containers:
         - name: image-mirror
           image: index.docker.io/seankhliao/image-mirror:latest
-          # envFrom:
-          #   - secretRef:
-          #       name: image-mirror-creds
+          imagePullPolicy: IfNotPresent
+          # livenessProbe:
+          #   httpGet:
+          #     path: /healthz
+          #     port: 8081
+          # readinessProbe:
+          #   httpGet:
+          #     path: /readyz
+          #     port: 8081
+          resources:
+            limits:
+              cpu: 100m
+              memory: 500Mi
+            requests:
+              cpu: 10m
+              memory: 50Mi
           volumeMounts:
             - mountPath: /root/.docker
               name: dockerconfig

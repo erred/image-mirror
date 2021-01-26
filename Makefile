@@ -22,10 +22,9 @@ KUBECTL 	?= $$(pwd)/bin/kubectl
 KUSTOMIZE 	?= $$(pwd)/bin/kustomize
 SKAFFOLD 	?= $$(pwd)/bin/skaffold
 
-.PHONY: clean
-clean:
+.PHONY: clean_cluster
+clean_cluster:
 	$(KIND) delete cluster --name $(CLUSTER_NAME) || true
-	rm -rf bin
 
 .PHONY: tools
 tools:

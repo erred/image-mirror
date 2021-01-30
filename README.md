@@ -18,6 +18,8 @@ A repo for image-mirror
   - not clear what "you should be able to get the controller to re-deploy" means
     - maybe same as retries?
   - currently panics (intentionally) with unimplemented
+- use annotation for state
+- use finalizer for deletion
 - lock down security
   - use non root
     - need to create home
